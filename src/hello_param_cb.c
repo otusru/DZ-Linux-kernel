@@ -55,5 +55,5 @@ module_init(mod_init);
 module_exit(mod_exit);
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Anonymous Developer");
+MODULE_AUTHOR("otusru");
 MODULE_DESCRIPTION("A simple param-callback module for the Linux kernel");
