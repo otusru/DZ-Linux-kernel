@@ -63,5 +63,5 @@ module_init(hello_param_init);
 module_exit(hello_param_exit);
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Anonymous");
+MODULE_AUTHOR("otusru");
 MODULE_DESCRIPTION("A simple Hello Param module for the Linux kernel");
