@@ -1,4 +1,6 @@
+import os
 import sys
+
 from module_ops import ModuleOps
 from tests import Tests
 
@@ -8,17 +10,15 @@ class Checker:
         self.idx_path = f"/sys/module/{module_name}/parameters/idx"
         self.ch_val_path = f"/sys/module/{module_name}/parameters/ch_val"
         self.str_buf_path = f"/sys/module/{module_name}/parameters/str_buf"
-
         self.idx_file = None
         self.ch_val_file = None
         self.str_buf_file = None
-
         self.open_sysfs_files()
+        
         self.ops = ModuleOps(self.idx_file, self.ch_val_file, self.str_buf_file)
         self.tests = Tests(self.ops)
 
     def open_sysfs_files(self, mode='r+'):
-        # Закрываем файлы, если они открыты
         for f in [self.idx_file, self.ch_val_file, self.str_buf_file]:
             if f:
                 try:
@@ -34,7 +34,6 @@ class Checker:
             print(f"Ошибка при открытии файлов sysfs: {e}")
             sys.exit(1)
 
-        # Обновляем ModuleOps и Tests с новыми файловыми объектами
         self.ops = ModuleOps(self.idx_file, self.ch_val_file, self.str_buf_file)
         self.tests = Tests(self.ops)
 
@@ -45,7 +44,7 @@ class Checker:
         return self.tests.ch_val_tests()
 
     def check_str_buf(self):
-        self.open_sysfs_files()  # Обновляем дескрипторы для актуальных данных
+        self.open_sysfs_files()
         return self.tests.str_buf_tests()
 
     def close_files(self):
@@ -56,7 +55,6 @@ class Checker:
                 except Exception:
                     pass
 
-    # Добавляем контекстный менеджер для удобства
     def __enter__(self):
         return self
 
