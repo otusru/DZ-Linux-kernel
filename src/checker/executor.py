@@ -24,9 +24,11 @@ class Executor:
 
     def str_buf_exec_test(self, case):
         _str = case['write']
+        # Заполняем buffer пробелами по умолчанию
         for idx in range(0, 13):
             self.ops.write_idx(str(idx))
             self.ops.write_ch_val(" ")
+        # Записываем заданную строку посимвольно
         for idx in range(0, len(_str)):
             self.ops.write_idx(str(idx))
             self.ops.write_ch_val(_str[idx])
