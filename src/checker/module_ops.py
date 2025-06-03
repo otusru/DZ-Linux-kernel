@@ -4,12 +4,12 @@ class ModuleOps:
         self.ch_val_file = ch_val_file
         self.str_buf_file = str_buf_file
 
-    def write_idx(self, value:str):
+    def write_idx(self, value: str):
         self.idx_file.seek(0)
         self.idx_file.write(value)
         self.idx_file.flush()
 
-    def write_ch_val(self, value:str):
+    def write_ch_val(self, value: str):
         val_str = str(value)
         self.ch_val_file.seek(0)
         self.ch_val_file.write(val_str[0])
