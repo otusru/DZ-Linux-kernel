@@ -2,50 +2,34 @@ from executor import Executor
 
 class Tests:
     def __init__(self, ops):
-        # Инициализируем исполнитель тестов
         self.exec = Executor(ops)
-
-    def run_tests(self, name, func, test_cases):
-        """Универсальный метод для запуска тестов"""
-        print(f"\n--- Запуск тестов {name} ---")
-        results = []
-
-        for case in test_cases:
-            expect_error = case.get("expect_error", False)
-            try:
-                result = func(case)
-                # Если ожидалась ошибка, а её не произошло — тест провален
-                if expect_error:
-                    print(f"[{name}] ОШИБКА: ожидалась ошибка, но всё прошло успешно")
-                    results.append(False)
-                else:
-                    results.append(result)
-            except Exception as e:
-                if expect_error:
-                    print(f"[{name}] Ожидаемая ошибка: {e}")
-                    results.append(True)
-                else:
-                    print(f"[{name}] НЕОЖИДАННАЯ ошибка: {e}")
-                    results.append(False)
-
-        print(f"\nТесты {name} завершены:", "OK" if all(results) else "FAIL")
-        return all(results)
 
     def idx_tests(self):
         test_cases = [
             {"write": "0", "expected": "0"},
             {"write": "2", "expected": "2"},
-            {"write": "A", "expect_error": True},
+            {"write": "A", "expected": "[Errno 22] Invalid argument"},
+            #{"write": "2", "expected": "2"},
         ]
-        return self.run_tests("idx", self.exec.idx_exec_test, test_cases)
+        print("\n--- Запуск тестов idx ---")
+        results = []
+        for case in test_cases:
+            results.append(self.exec.idx_exec_test(case))
+        print("\nТесты idx завершены:", "OK" if all(results) else "FAIL")
+        return all(results)
 
     def ch_val_tests(self):
         test_cases = [
             {"write": "A", "expected": "A"},
-            {"write": "123", "expected": "1"},  # ожидаем только первый символ
-            {"write": "\n", "expect_error": True},
+            {"write": "123", "expected": "1"},
+            {"write": "\n", "expected": "[Errno 22] Invalid argument"},
         ]
-        return self.run_tests("ch_val", self.exec.ch_val_exec_test, test_cases)
+        print("\n--- Запуск тестов ch_val ---")
+        results = []
+        for case in test_cases:
+            results.append(self.exec.ch_val_exec_test(case))
+        print("\nТесты ch_val завершены:", "OK" if all(results) else "FAIL")
+        return all(results)
 
     def str_buf_tests(self):
         test_cases = [
@@ -53,4 +37,9 @@ class Tests:
             {"write": "World!", "expected": "World!"},
             {"write": "Hello, World!", "expected": "Hello, World!"},
         ]
-        return self.run_tests("str_buf", self.exec.str_buf_exec_test, test_cases)
+        print("\n--- Запуск тестов str_buf ---")
+        results = []
+        for case in test_cases:
+            results.append(self.exec.str_buf_exec_test(case))
+        print("\nТесты str_buf завершены:", "OK" if all(results) else "FAIL")
+        return all(results)
