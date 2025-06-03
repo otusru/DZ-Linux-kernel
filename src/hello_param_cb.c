@@ -2,19 +2,22 @@
 
 #include <linux/module.h>
 #include <linux/kernel.h>
-#include <linux/stat.h>
 #include <linux/init.h>
+#include <linux/stat.h>
+#include <linux/param.h>
 
-static int param = 0;
+static int my_param = 0;
 
 static int param_get(char *buffer, const struct kernel_param *kp)
 {
-	return sprintf(buffer, "%d", param);
+	const int *p = (const int *)kp->arg;
+	return scnprintf(buffer, PAGE_SIZE, "%d\n", *p);
 }
 
 static int param_set(const char *val, const struct kernel_param *kp)
 {
 	int res, _val;
+	int *p = (int *)kp->arg;
 
 	res = kstrtoint(val, 10, &_val);
 	if (res) {
@@ -23,12 +26,12 @@ static int param_set(const char *val, const struct kernel_param *kp)
 	}
 
 	if (_val < 0 || _val > 100) {
-		pr_err("Ошибка: значение должно быть от 0 до 100!\n");
+		pr_err("Ошибка: значение должно быть в диапазоне 0–100!\n");
 		return -EINVAL;
 	}
 
-	param = _val;
-	pr_info("Параметр изменен на: %d\n", param);
+	*p = _val;
+	pr_info("Параметр изменён на: %d\n", *p);
 	return 0;
 }
 
@@ -37,12 +40,12 @@ static const struct kernel_param_ops param_ops = {
 	.get = param_get,
 };
 
-module_param_cb(param, &param_ops, &param, S_IRUGO | S_IWUSR);
-MODULE_PARM_DESC(param, "Пример параметра с callback (диапазон: 0-100)");
+module_param_cb(param, &param_ops, &my_param, 0644);
+MODULE_PARM_DESC(param, "Пример параметра с callback (диапазон: 0–100)");
 
 static int __init mod_init(void)
 {
-	pr_info("Модуль загружен. Текущее значение параметра: %d\n", param);
+	pr_info("Модуль загружен. Значение параметра: %d\n", my_param);
 	return 0;
 }
 
@@ -56,4 +59,4 @@ module_exit(mod_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("otusru");
-MODULE_DESCRIPTION("A simple param-callback module for the Linux kernel");
+MODULE_DESCRIPTION("Модуль ядра с параметром и колбэками get/set");
